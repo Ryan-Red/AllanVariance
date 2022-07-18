@@ -33,6 +33,22 @@ print(dt)
 
 field = ["Ax","Ay","Az"]
 
+def getSmoothingAverage(inputs, N=10):
+
+    outputs = []
+
+    if(N > len(inputs)):
+        print("ERROR: Please pick smaller averaging window")
+        return []
+
+    for i in range(0,N):
+        outputs.append(inputs[i])
+
+    for i in range(N,len(inputs),1):
+        outputs.append(np.average(outputs[len(outputs) - N:len(outputs)]))
+
+    return outputs
+
 
 def computeAllanVariance(name="Ax"):
     print("Currently Processing {}".format(name))
@@ -80,6 +96,10 @@ def computeAllanVariance(name="Ax"):
     Power = np.sqrt(W_V_avg)
     ax.loglog(f, Power, lw=2)
 
+    avg = getSmoothingAverage(Power,N=10)
+
+    ax.plot(f,avg, 'y')
+
 
     freq_err = 1
     sigma_err = np.interp(freq_err, f, Power)
@@ -90,7 +110,8 @@ def computeAllanVariance(name="Ax"):
     ax.plot(f[idx], freq_line[idx], 'bo')
 
 
-    ax.plot(freq_err,sigma_err,color='ro')
+
+    ax.plot(freq_err,sigma_err,'ro')
 
     ax.set_ylabel("Accel, $\sqrt{W_B}$ ")
     ax.set_xlabel("frequency, $f$ [Hz]")
@@ -114,14 +135,7 @@ def computeAllanVariance(name="Ax"):
     np.savetxt(saveFile+".txt",np.column_stack((f,Power)),delimiter="\t",header="frequency [Hz]\tMagnetic Field Spectrum")
 
 
-p1 = Process(target=computeAllanVariance,args=('Ax'))
-p2 = Process(target=computeAllanVariance,args=('Ay'))
-p3 = Process(target=computeAllanVariance,args=('Az'))
+computeAllanVariance('Ax')
+computeAllanVariance("Ay")
+computeAllanVariance('Az')
 
-p1.start()
-p2.start()
-p3.start()
-
-p1.join()
-p2.join()
-p3.join()
