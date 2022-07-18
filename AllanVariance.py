@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from multiprocessing import Process
 W_V_list = []
 
 v_avg_list = []
@@ -32,9 +33,8 @@ print(dt)
 
 field = ["Ax","Ay","Az"]
 
-for j in range(0,3,1):
 
-    name = field[j]
+def computeAllanVariance(name="Ax"):
     print("Currently Processing {}".format(name))
 
 
@@ -79,6 +79,19 @@ for j in range(0,3,1):
 
     Power = np.sqrt(W_V_avg)
     ax.loglog(f, Power, lw=2)
+
+
+    freq_err = 1
+    sigma_err = np.interp(freq_err, f, Power)
+
+
+    freq_line = f*1/2 -3
+    idx = np.argwhere(np.diff(np.sign(Power - freq_line))).flatten()
+    ax.plot(f[idx], freq_line[idx], 'bo')
+
+
+    ax.plot(freq_err,sigma_err,color='ro')
+
     ax.set_ylabel("Accel, $\sqrt{W_B}$ ")
     ax.set_xlabel("frequency, $f$ [Hz]")
     if name == "Ax":
@@ -90,11 +103,25 @@ for j in range(0,3,1):
 
     ax.margins(0,0.1)
     ax.grid()
-    plt.show()
 
     saveFile = "accel_{}".format(name)
 
     plt.savefig(saveFile+".png")
 
+    plt.show()
+
+
     np.savetxt(saveFile+".txt",np.column_stack((f,Power)),delimiter="\t",header="frequency [Hz]\tMagnetic Field Spectrum")
 
+
+p1 = Process(target=computeAllanVariance,args=('Ax'))
+p2 = Process(target=computeAllanVariance,args=('Ay'))
+p3 = Process(target=computeAllanVariance,args=('Az'))
+
+p1.start()
+p2.start()
+p3.start()
+
+p1.join()
+p2.join()
+p3.join()
