@@ -50,6 +50,11 @@ pipeline.start(cfg)
 gyro = dataFrame()
 accel = dataFrame()
 
+t_start = time.time()
+
+i = 0
+
+
 try:
     while True:
 
@@ -60,6 +65,12 @@ try:
 
         gyro.add_data(time.time_ns(), frames[1].as_motion_frame().get_motion_data())
         accel.add_data(time.time_ns(), frames[0].as_motion_frame().get_motion_data())
+
+        if(time.time() - t_start  >= 100):
+            i+=1
+            gyro.save_file("gyroTest_{}".format(i))
+            accel.save_file("accelTest_{}".format(i))
+            t_start = time.time()
 
         time.sleep(0.01)
 
