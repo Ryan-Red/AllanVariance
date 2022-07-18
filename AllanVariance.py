@@ -2,14 +2,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 W_V_list = []
 
-
-
-
-
 v_avg_list = []
 
-fileName="accelTest.txt"
-t, Ax, Ay, Az = np.loadtxt(fileName,unpack=True)
+fileNameRoot="accelTest"
+
+
+file_Range = (10,100)
+
+t = np.array([])
+Ax = np.array([])
+Ay = np.array([])
+Az = np.array([])
+
+for i in range(file_Range[0],file_Range[1]):
+    t_temp, Ax_temp, Ay_temp, Az_temp = np.loadtxt(fileNameRoot+"_{}.txt".format(i),unpack=True)
+    np.append(t, t_temp)
+    np.append(Ax, Ax_temp)
+    np.append(Ay, Ay_temp)
+    np.append(Az, Az_temp)
 
 T = (t[-1] - t[0])#convert to seconds
 
