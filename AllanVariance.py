@@ -16,10 +16,10 @@ Az = np.array([])
 
 for i in range(file_Range[0],file_Range[1]):
     t_temp, Ax_temp, Ay_temp, Az_temp = np.loadtxt(fileNameRoot+"_{}.txt".format(i),unpack=True)
-    np.append(t, t_temp)
-    np.append(Ax, Ax_temp)
-    np.append(Ay, Ay_temp)
-    np.append(Az, Az_temp)
+    t = np.append(t, t_temp)
+    Ax = np.append(Ax, Ax_temp)
+    Ay = np.append(Ay, Ay_temp)
+    Az = np.append(Az, Az_temp)
 
 T = (t[-1] - t[0])#convert to seconds
 
