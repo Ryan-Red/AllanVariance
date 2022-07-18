@@ -5,10 +5,10 @@ W_V_list = []
 
 v_avg_list = []
 
-fileNameRoot="accelTest"
+fileNameRoot="accelTestHighFreq"
 
 
-file_Range = (10,100)
+file_Range = (22,23)
 
 t = np.array([])
 Ax = np.array([])
@@ -45,7 +45,7 @@ def getSmoothingAverage(inputs, N=10):
         outputs.append(inputs[i])
 
     for i in range(N,len(inputs),1):
-        outputs.append(np.average(outputs[len(outputs) - N:len(outputs)]))
+        outputs.append(np.average(inputs[len(outputs) - (int)(N/2):len(outputs)+ (int)(N/2)]))
 
     return outputs
 
